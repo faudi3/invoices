@@ -5,6 +5,7 @@
     class="invoice-wrap flex flex-column"
   >
     <form @submit.prevent="submitForm" class="invoice-content">
+      <loadingComp v-show="loading" />
       <h1>New Invoice</h1>
 
       <!-- Bill From -->
@@ -200,6 +201,7 @@
 </template>
 
 <script>
+import loadingComp from "./LoadingComp";
 import { db } from "@/firebase/firebaseInit";
 import { doc, setDoc } from "firebase/firestore";
 import { mapMutations } from "vuex";
@@ -209,8 +211,10 @@ export default {
   data() {
     return {
       dateOptions: { year: "numeric", month: "short", day: "numeric" },
-      /*docId: null,
-      loading: null,*/
+      /*
+      docId: null,
+*/
+      loading: null,
       billerStreetAddress: null,
       billerCity: null,
       billerZipCode: null,
@@ -277,6 +281,7 @@ export default {
         alert("fill out work items");
         return;
       }
+      this.loading = true;
       this.calInvoiceTotal();
 
       await setDoc(doc(db, "invoices", uid(10)), {
@@ -303,6 +308,8 @@ export default {
         invoiceDraft: this.invoiceDraft,
         invoicePaid: null,
       });
+      this.loading = false;
+
       this.TOGGLE_INVOICE();
     },
     submitForm() {
@@ -319,6 +326,9 @@ export default {
         this.paymentDueDateUnix
       ).toLocaleDateString("en-us", this.dateOptions);
     },
+  },
+  components: {
+    loadingComp,
   },
 };
 </script>
