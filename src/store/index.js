@@ -1,14 +1,15 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 
 export default createStore({
   state: {
+    invoiceModel: null,
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
+    TOGGLE_INVOICE(state) {
+      state.invoiceModel = !state.invoiceModel;
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
-})
+  actions: {},
+  modules: {},
+});
