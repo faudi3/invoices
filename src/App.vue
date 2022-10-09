@@ -3,6 +3,7 @@
     <div v-if="!mobile" class="app flex flex-column">
       <NavigationComp />
       <div class="app-content flex flex-column">
+        <InvoiceModel />
         <router-view />
       </div>
     </div>
@@ -15,6 +16,7 @@
 
 <script>
 import NavigationComp from "@/components/NavigationComp";
+import InvoiceModel from "@/components/InvoiceModel";
 export default {
   data() {
     return {
@@ -23,6 +25,7 @@ export default {
   },
   components: {
     NavigationComp,
+    InvoiceModel,
   },
   created() {
     this.checkScreen();
