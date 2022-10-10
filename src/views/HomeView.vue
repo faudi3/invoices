@@ -25,12 +25,19 @@
       </div>
     </div>
     <!--Invoices -->
-    <div>
+    <div v-if="invoiceData.length > 0">
       <InvoiceComp
         v-for="(invoice, index) in invoiceData"
         :key="index"
         v-bind:invoice="invoice"
       />
+    </div>
+    <div v-else class="empty flex flex-column">
+      <img src="@/assets/illustration-empty.svg" alt="" />
+      <h3>There is nothing in here</h3>
+      <p>
+        Create a new invoice by clicking the New Invoice button and get started!
+      </p>
     </div>
   </div>
 </template>
@@ -128,6 +135,25 @@ export default {
           }
         }
       }
+    }
+  }
+  .empty {
+    margin-top: 70px;
+    align-items: center;
+    img {
+      width: 214px;
+      height: 200px;
+    }
+    h3 {
+      font-size: 20px;
+      margin-top: 40px;
+    }
+    p {
+      text-align: center;
+      max-width: 224px;
+      font-size: 12px;
+      font-weight: 300;
+      margin-top: 16px;
     }
   }
 }

@@ -1,7 +1,4 @@
 <template>
-  <!--
-  <div class="invoice flex">
--->
   <router-link
     class="invoice flex"
     :to="{
