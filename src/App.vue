@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="invoicesLoaded">
     <div v-if="!mobile" class="app flex flex-column">
       <NavigationComp />
       <div class="app-content flex flex-column">
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import NavigationComp from "@/components/NavigationComp";
 import InvoiceModel from "@/components/InvoiceModel";
 import ModelComp from "@/components/ModelComp";
@@ -34,6 +34,7 @@ export default {
     ModelComp,
   },
   created() {
+    this.GET_INVOICES();
     this.checkScreen();
     window.addEventListener("resize", this.checkScreen);
   },
@@ -46,9 +47,10 @@ export default {
       }
       this.mobile = false;
     },
+    ...mapActions(["GET_INVOICES"]),
   },
   computed: {
-    ...mapState(["invoiceModel", "modelActive"]),
+    ...mapState(["invoiceModel", "modelActive", "invoicesLoaded"]),
   },
 };
 </script>
