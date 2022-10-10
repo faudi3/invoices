@@ -26,7 +26,11 @@
     </div>
     <!--Invoices -->
     <div>
-      <InvoiceComp v-for="(invoice, index) in invoiceData" :key="index" />
+      <InvoiceComp
+        v-for="(invoice, index) in invoiceData"
+        :key="index"
+        v-bind:invoice="invoice"
+      />
     </div>
   </div>
 </template>
