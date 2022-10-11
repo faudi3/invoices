@@ -1,7 +1,13 @@
 import { createStore } from "vuex";
 
 import { db } from "@/firebase/firebaseInit";
-import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  deleteDoc,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 export default createStore({
   state: {
     invoiceData: [],
@@ -38,37 +44,56 @@ export default createStore({
         (invoice) => invoice.docId !== payload
       );
     },
+    UPDATE_STATUS_TO_PAID(state, payload) {
+      state.invoiceData.forEach((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = true;
+          invoice.invoicePending = false;
+        }
+      });
+    },
+    UPDATE_STATUS_TO_PENDING(state, payload) {
+      state.invoiceData.forEach((invoice) => {
+        if (invoice.docId === payload) {
+          invoice.invoicePaid = false;
+          invoice.invoicePending = true;
+          invoice.invoiceDraft = false;
+        }
+      });
+    },
   },
   actions: {
-    async GET_INVOICES({ commit }) {
+    async GET_INVOICES({ commit, state }) {
       const querySnapshot = await getDocs(collection(db, "invoices"));
       querySnapshot.forEach((doc) => {
-        const data = {
-          docId: doc.id,
-          invoiceId: doc.data().invoiceId,
-          billerStreetAddress: doc.data().billerStreetAddress,
-          billerCity: doc.data().billerCity,
-          billerZipCode: doc.data().billerZipCode,
-          billerCountry: doc.data().billerCountry,
-          clientName: doc.data().clientName,
-          clientEmail: doc.data().clientEmail,
-          clientStreetAddress: doc.data().clientStreetAddress,
-          clientCity: doc.data().clientCity,
-          clientZipCode: doc.data().clientZipCode,
-          clientCountry: doc.data().clientCountry,
-          invoiceDateUnix: doc.data().invoiceDateUnix,
-          invoiceDate: doc.data().invoiceDate,
-          paymentTerms: doc.data().paymentTerms,
-          paymentDueDateUnix: doc.data().paymentDueDateUnix,
-          paymentDueDate: doc.data().paymentDueDate,
-          productDescription: doc.data().productDescription,
-          invoiceItemList: doc.data().invoiceItemList,
-          invoiceTotal: doc.data().invoiceTotal,
-          invoicePending: doc.data().invoicePending,
-          invoiceDraft: doc.data().invoiceDraft,
-          invoicePaid: doc.data().invoicePaid,
-        };
-        commit("SET_INVOICE_DATA", data);
+        if (!state.invoiceData.some((invoice) => invoice.docId === doc.id)) {
+          const data = {
+            docId: doc.id,
+            invoiceId: doc.data().invoiceId,
+            billerStreetAddress: doc.data().billerStreetAddress,
+            billerCity: doc.data().billerCity,
+            billerZipCode: doc.data().billerZipCode,
+            billerCountry: doc.data().billerCountry,
+            clientName: doc.data().clientName,
+            clientEmail: doc.data().clientEmail,
+            clientStreetAddress: doc.data().clientStreetAddress,
+            clientCity: doc.data().clientCity,
+            clientZipCode: doc.data().clientZipCode,
+            clientCountry: doc.data().clientCountry,
+            invoiceDateUnix: doc.data().invoiceDateUnix,
+            invoiceDate: doc.data().invoiceDate,
+            paymentTerms: doc.data().paymentTerms,
+            paymentDueDateUnix: doc.data().paymentDueDateUnix,
+            paymentDueDate: doc.data().paymentDueDate,
+            productDescription: doc.data().productDescription,
+            invoiceItemList: doc.data().invoiceItemList,
+            invoiceTotal: doc.data().invoiceTotal,
+            invoicePending: doc.data().invoicePending,
+            invoiceDraft: doc.data().invoiceDraft,
+            invoicePaid: doc.data().invoicePaid,
+          };
+          commit("SET_INVOICE_DATA", data);
+        }
       });
       commit("INVOICES_LOADED");
     },
@@ -82,6 +107,33 @@ export default createStore({
     async DELETE_INVOICE({ commit }, docId) {
       await deleteDoc(doc(db, "invoices", docId));
       commit("DELETE_INVOICE", docId);
+    },
+
+    async UPDATE_STATUS_TO_PAID({ commit }, docId) {
+      const docRef = doc(db, "invoices", docId);
+      await setDoc(
+        docRef,
+        {
+          invoicePaid: true,
+          invoicePending: false,
+        },
+        { merge: true }
+      );
+      commit("UPDATE_STATUS_TO_PAID", docId);
+    },
+    async UPDATE_STATUS_TO_PENDING({ commit }, docId) {
+      const docRef = doc(db, "invoices", docId);
+
+      await setDoc(
+        docRef,
+        {
+          invoicePaid: false,
+          invoicePending: true,
+          invoiceDraft: false,
+        },
+        { merge: true }
+      );
+      commit("UPDATE_STATUS_TO_PENDING", docId);
     },
   },
 });
