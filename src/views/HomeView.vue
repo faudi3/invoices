@@ -1,13 +1,13 @@
 <template>
-  <div className="home container">
+  <div @click="checkClickFilter" className="home container">
     <div class="header flex">
       <div class="left flex flex-column">
         <h1>Invoices</h1>
         <span>There are {{ invoiceData.length }} total invoices</span>
       </div>
       <div class="right flex">
-        <div @click="toggleFilterMenu" class="filter flex">
-          <span
+        <div class="filter flex">
+          <span ref="filterRef"
             >Filter by status
             <span v-if="filteredInvoice">: {{ filteredInvoice }}</span></span
           >
@@ -57,9 +57,15 @@ export default {
     };
   },
   methods: {
-    toggleFilterMenu() {
-      this.filterMenu = !this.filterMenu;
+    checkClickFilter(e) {
+      if (e.target !== this.$refs.filterRef && this.filterMenu) {
+        this.filterMenu = !this.filterMenu;
+      }
+      if (e.target === this.$refs.filterRef) {
+        this.filterMenu = !this.filterMenu;
+      }
     },
+
     ...mapMutations(["TOGGLE_INVOICE"]),
     newInvoice() {
       this.TOGGLE_INVOICE();
@@ -99,6 +105,7 @@ export default {
 <style lang="scss" scoped>
 .home {
   color: white;
+
   .header {
     margin-bottom: 65px;
     .left,
@@ -119,7 +126,6 @@ export default {
         position: relative;
         margin-right: 40px;
         cursor: pointer;
-
         img {
           margin-left: 12px;
           width: 9px;
