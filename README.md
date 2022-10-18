@@ -1,24 +1,5 @@
-# inv
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+#Приложение по выставлению счетов
+## Функционал CRUD (возможность создать счет,получить и увидеть из базы данных,изменить и удалить) а также возможность фильтрации по статусу счета.
+### Vue + vuex + vue router + firebase
+### desktop only
+#### https://invoices-one.vercel.app/
